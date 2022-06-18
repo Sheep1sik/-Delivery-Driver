@@ -4,11 +4,15 @@ using UnityEngine;
 
 public class Driver : MonoBehaviour
 {
-    
-    
+    [SerializeField] float slowSpeed = 0.01f;
+    [SerializeField] float boostSpeed = 0.01f;
     [SerializeField] float steerSpeed = 200f;
     [SerializeField] float moveSpeed = 7f; // SerializeField = 직렬화하도록 해주는 어뷰리튜드
     // 변수나 클래스 앞에 삽입하는 대괄호는 어떤 어뷰리튜드를 다음에 나오는것에 적용한다라는 뜻
+    void startSpeed()
+    {
+        moveSpeed = 10f;
+    }
     void Start() // Start = 플레이버튼을 눌렀을때 , 지금 당장 시작
     {
         
@@ -25,5 +29,25 @@ public class Driver : MonoBehaviour
         // -steerAmount = steerAmount로 사용하면 왼쪽을 누르면 오른쪽으로 가고 오른쪽은 왼쪽으로 가지만 -를 해줌으로써 방향을 제대로 맞출 수 있다.
         transform.Translate(0, moveAmount, 0); // 차량이 y축으로 0.01 만큼 프레임별로 이동
         
+    }
+    void OnCollisionEnter2D(Collision2D other)
+    {
+            moveSpeed = slowSpeed;
+            Invoke("startSpeed",2f);
+    }
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        if(other.tag == "Boost")
+        {
+            Debug.Log("스피드 업!!!");
+            moveSpeed = boostSpeed;
+            Invoke("startSpeed",2f);
+        }
+        if(other.tag == "Grass")
+        {
+            Debug.Log("풀숲에선 속도가 줄어듭니다.");
+            moveSpeed = slowSpeed;
+            Invoke("startSpeed",2f);
+        }
     }
 }
